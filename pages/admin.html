@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #000;
+            width: 90%;
+            margin: 0 auto;
+            font-family: "Roboto", sans-serif;
+            color: #fff;
+            transition: 0.5s;
+        }
+
+        header > h1 {
+            margin-right: 50px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            transition: 0.5s;
+        }
+
+        a:hover {
+            background-color: #272727;
+            box-shadow: 0 0 10px 8px #272727;
+            transition: 0.5s;
+        }
+
+        table {
+            margin: 100px 0;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px 20px;
+            border: 1px solid #fff;
+            min-width: 100px;
+            text-align: center;
+            transition: 0.5s;
+        }
+
+        th:hover,
+        td:hover {
+            background-color: #272727;
+            transition: 0.5s;
+            cursor: pointer;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 700;
+            width: 200px;
+        }
+
+        .surveyItem {
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .inputSurvey {
+            height: 24px;
+            font-size: 18px;
+            width: 400px;
+            margin-top: 5px;
+            border: 2px solid #fff;
+            background-color: #000;
+            color: #fff;
+            border-radius: 5px;
+            transition: 0.5s;
+        }
+
+        .inputSurvey:hover {
+            background-color: #696969;
+            transition: 0.5s;
+        }
+
+        #countButton {
+            width: 150px;
+            height: 40px;
+            background-color: black;
+            border-radius: 5px;
+            color: #fff;
+            font-weight: 700;
+            border: 2px solid #fff;
+            transition: 0.5s;
+            margin-top:40px;
+        }
+
+        #countButton:hover {
+            color: #000;
+            background-color: #696969;
+            cursor: pointer;
+            transition: 0.5s;
+        }
+
+    </style>
+    <title>Монитор тестирования</title>
+<body>
+    <header>
+        <h1>Монитор тестирования<br> (панель администратора)</h1>
+        <nav>
+            <a onclick="" href="">Выход</a>
+        </nav>
+    </header>
+    <main id="mainAdmin">
+
+    </main>
+    <div>
+        <h2>Создание опроса</h2>
+        <div class="surveyItem">
+            <label for="titleInput">название опроса</label>
+            <input type="text" id="titleInput" class="inputSurvey" style="width:300px">
+        </div>
+        <div class="surveyItem">
+            <label for="countInput">количество вопросов</label>
+            <input type="number" min="1" step="1" id="countInput" class="inputSurvey" style="width:100px">
+            <div class="countButton">
+                <input type="button" id="countButton" value="Принять">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+
+    </footer>
+    <script type="text/javascript">
+        let contForTable = document.getElementById("mainAdmin");
+        //тут запрос, по идее
+        let respondentsObj = {questionsCount:5, respondents:[{name:'Kaku;.orl', answers:['loss gazcdgl', 'gfhfnsdgcvfkek', 'kdfsdcghk', 'kweaek', 'cdfgfgnakek']},
+                {name:'Kagfhkrl', answers:['loszcdfgxfdgl', 'sdvbmbgcvfkek', 'kdfsdsxfchk', 'kedrak', 'cdsdfgakek']},
+                {name:'Kdfgharl', answers:['loszdgzcdgl', 'sdgczsfvfkek', 'kdfdvsfhk', 'keseck', 'cdfgadfhkek']},
+                {name:'Kawgarl', answers:['loszaercdgl', 'sdgcAdsvfkek', 'kdfdfbhhk', 'scdfkek', 'cdXWEfgakek']}
+            ]
+        };
+        let ansArray = respondentsObj.respondents;
+        // надо поставить интервал опроса данной переменной, чтобы в лайв режиме обновлялось
+        const creatingTable = (container, countQ, answersArray) => {
+            if(answersArray.length){
+                let table = document.createElement('table')
+                let thead = document.createElement('thead')
+                let firstStroke = document.createElement('tr')
+                for(let i = 0; i <= countQ; ++i){
+                    let th = document.createElement('th')
+                    if(i === countQ){
+                        th.textContent = "Фамилия"
+                        firstStroke.prepend(th)
+                        break;
+                    }
+                    th.textContent = `Вопрос №${i+1}`
+                    firstStroke.append(th)
+
+                }
+                thead.append(firstStroke)
+                table.append(thead);
+
+                for(let i = 0; i < answersArray.length; ++i){
+                    let stroke =  document.createElement('tr')
+                    for(let j = 0; j <= countQ; ++j){
+                        let td = document.createElement('td')
+                        if(j === countQ){
+                            td.textContent = answersArray[i].name
+                            stroke.prepend(td)
+                            break;
+                        }
+                        td.textContent = answersArray[i].answers[j]
+                        stroke.append(td)
+                    }
+                    table.append(stroke);
+                }
+                container.append(table);
+            }
+            else{
+                let h1 = document.createElement('h1')
+                h1.textContent = "Результатов пока нет"
+                h1.style.textAlign = 'center'
+                container.append(h1)
+            }
+
+        }
+        const countButton = document.querySelector("#countButton");
+        countButton.addEventListener("click", () => {
+            const title = document.querySelector("#titleInput").value
+            const count = document.querySelector("#countInput").value
+            //creatingSurvey(count)
+            const JSONToSending = JSON.stringify({title, count})
+            let request = new XMLHttpRequest();
+            request.open("POST", "/survey", true);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.addEventListener("load", function () {
+                // if(request.status === 200 && request.readyState === 4){
+                //     if(checkbox.checked){
+                //         document.location.href = '/pages/special';
+                //     }
+                //     else{
+                //     localStorage.setItem("name", document.getElementById('name').value)
+                //     localStorage.setItem("surname", document.getElementById('surname').value)
+                //     localStorage.setItem("group", document.getElementById('group').value)
+                //     document.location.href = '/pages/profile';
+                //     }
+                // }
+
+            });
+            request.send(JSONToSending);
+        });
+        // const creatingSurvey = (container, count) => {
+
+        //     for(let i = 0; i < count; ++i){
+        //         let div = document.createElement('div');
+        //         div.classList.add("surveyItem");
+        //         let input = document.createElement('input');
+        //         input.id = question + (i + 1);
+        //         input.classList.add("inputSurvey");
+        //         let label = document.createElement("label");
+        //         label.textContent = "Вопрос № " + (i + 1);
+        //         label.setAttribute('for', input.id);
+        //         div.append(label);
+        //         div.append(input);
+        //         container.append(div)
+        //     }
+
+        // }
+        creatingTable(contForTable, respondentsObj.questionsCount, ansArray);
+
+    </script>
+</body>
+</html>
