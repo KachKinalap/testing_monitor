@@ -72,7 +72,7 @@
             transition: 0.5s;
         }
 
-        #enterButton {
+        #sendingButton {
             width: 150px;
             height: 40px;
             background-color: black;
@@ -83,7 +83,7 @@
             transition: 0.5s;
         }
 
-        #enterButton:hover {
+        #sendingButton:hover {
             background-color: black;
             color: #000;
             background-color: #696969;
@@ -150,7 +150,7 @@
             </div>
         </fieldset>
         <div class="submitButton">
-            <input type="button" id="enterButton" value="Отправить">
+            <input type="button" id="sendingButton" value="Отправить">
         </div>
 
 
@@ -160,11 +160,7 @@
     </footer>
     <script type="text/javascript">
         const cont = document.getElementById('mainClient')
-
-        // const qns = {questionsCount:4, questions:[
-        //         {text:'dfghkh', hint:'hahsdj'},{text:'dfghkh', hint:'hahsdj'},{text:'dfghkh', hint:'hahsdj'},{text:'dfghkh', hint:'hahsdj'}
-        //     ]}
-
+        const sendingButton = document.getElementById("sendingButton")
         const creatingClientInputs = (countQ = 0, container)=>{
             if(countQ){
                 let qOutputArray = []
@@ -235,6 +231,33 @@
             }
         });
         request.send();
+        
+        sendingButton.addEventListener('click', () => {
+            const inputFields = document.querySelectorAll(".inputClient")
+            const massAnswers = []
+            inputFields.forEach((item) => {
+                massAnswers.push(item.value);
+            });
+            const JSONToSending = {
+                group:localStorage.getItem("group"), 
+                name:localStorage.getItem("name"),
+                surname:localStorage.getItem("surname"),
+                answersField:massAnswers
+            }
+
+            let testRequest = new XMLHttpRequest();
+            testRequest.open("POST", "/answers", true);
+            testRequest.setRequestHeader("Content-Type", "application/json");
+            testRequest.addEventListener("load", function () {
+                if(testRequest.status === 200 && testRequest.readyState === 4){
+                    console.log(testRequest)
+                    console.log("all's sent");
+                }
+            });
+            console.log(JSON.stringify(JSONToSending));
+            testRequest.send(JSON.stringify(JSONToSending));
+        });
+
 
     </script>
 </body>

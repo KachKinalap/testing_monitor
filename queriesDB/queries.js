@@ -65,7 +65,7 @@ exports.loginQuery =  (request, response) => {
             }
         }
     });
-}
+};
 
 exports.surveyProcessing = (request, response) => {
     const formattedSurvey = [uuid.v4(), request.body.title, Number(request.body.count)]
@@ -77,7 +77,7 @@ exports.surveyProcessing = (request, response) => {
             console.log(result);
         }
     });
-}
+};
 
 exports.surveysGetting = (request, response) => {
     connConfig.query(queryTemplates.getSurveys, (err, result) => {
@@ -93,4 +93,53 @@ exports.surveysGetting = (request, response) => {
             response.json(arrayToSend);
         }
     });
-}
+};
+
+exports.answersProcessing = (request, response) => {
+    console.log(request);
+    const inputMass = [request.body.group, request.body.name, request.body.surname];
+    connConfig.query(queryTemplates.findUserAnswers, inputMass, (err, result) => {
+        if(err) {
+            console.log(err);
+        }
+        else {
+            if(result){
+                connConfig.query(queryTemplates.deleteUsersAnswers, inputMass, (err, result) => {
+                    if(err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("old user's answers were deleted");
+                        inputMass.push(JSON.stringify(request.body.answersField));
+                        connConfig.query(queryTemplates.pasteAnswers, inputMass, (err, result) => {
+                            if(err) {
+                                console.log(err);
+                            }
+                            else {
+                                const respAnswersGot = "AnswersHaveGotten";
+                                response.json(respAnswersGot);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+};
+
+exports.answersGetting = (request, response) => {
+    connConfig.query(queryTemplates.getAnswers, (err, result) => {
+        if(err) {
+            console.log(err);
+        }
+        else {
+            console.log(result);
+            const arrayToSend = [];
+            for(let i = 0; i < result.length; ++i){
+                arrayToSend.push({name:result[i].name, surname:result[i].surname, answersField:JSON.parse(result[i].answersField)})
+            }
+            response.json(arrayToSend);
+        }
+    });
+};

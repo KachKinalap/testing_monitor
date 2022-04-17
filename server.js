@@ -22,7 +22,9 @@ pagesRouter.get("/profile", function(request, response){
     response.sendFile(__dirname + "/pages/client.html");
 });
 //получаем ответы от юзера
-//app.post("/answers", jsonParser, customQueries.answersProcessing);
+app.post("/answers", jsonParser, customQueries.answersProcessing);
+//даём ответы админу
+app.get("/answers",jsonParser, customQueries.answersGetting);
 //создание опроса
 app.post("/survey", jsonParser, customQueries.surveyProcessing);
 //получение опроса студентами

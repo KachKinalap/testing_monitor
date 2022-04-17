@@ -92,7 +92,7 @@
             transition: 0.5s;
         }
 
-        #countButton {
+        #countButton, #startButton, #truncateButton {
             width: 150px;
             height: 40px;
             background-color: black;
@@ -104,7 +104,11 @@
             margin-top:40px;
         }
 
-        #countButton:hover {
+        #startButton, #truncateButton {
+            width:220px;
+        }
+
+        #countButton:hover, #startButton:hover, #truncateButton:hover {
             color: #000;
             background-color: #696969;
             cursor: pointer;
@@ -123,6 +127,10 @@
     <main id="mainAdmin">
 
     </main>
+    <div id="startButtonCont">
+        <input type="button" id="startButton" value="Сбор статистики">
+        <input type="button" id="truncateButton" value="Очистка результатов">
+    </div>
     <div>
         <h2>Создание опроса</h2>
         <div class="surveyItem">
@@ -143,24 +151,31 @@
     </footer>
     <script type="text/javascript">
         let contForTable = document.getElementById("mainAdmin");
+        const startButton = document.querySelector("#startButton");
+        const truncateButton = document.querySelector("#truncateButton");
         //тут запрос, по идее
-        let respondentsObj = {questionsCount:5, respondents:[{name:'Kaku;.orl', answers:['loss gazcdgl', 'gfhfnsdgcvfkek', 'kdfsdcghk', 'kweaek', 'cdfgfgnakek']},
-                {name:'Kagfhkrl', answers:['loszcdfgxfdgl', 'sdvbmbgcvfkek', 'kdfsdsxfchk', 'kedrak', 'cdsdfgakek']},
-                {name:'Kdfgharl', answers:['loszdgzcdgl', 'sdgczsfvfkek', 'kdfdvsfhk', 'keseck', 'cdfgadfhkek']},
-                {name:'Kawgarl', answers:['loszaercdgl', 'sdgcAdsvfkek', 'kdfdfbhhk', 'scdfkek', 'cdXWEfgakek']}
-            ]
-        };
-        let ansArray = respondentsObj.respondents;
+        // let respondentsObj = {questionsCount:5, respondents:[{name:'Kaku;.orl', answers:['loss gazcdgl', 'gfhfnsdgcvfkek', 'kdfsdcghk', 'kweaek', 'cdfgfgnakek']},
+        //         {name:'Kagfhkrl', answers:['loszcdfgxfdgl', 'sdvbmbgcvfkek', 'kdfsdsxfchk', 'kedrak', 'cdsdfgakek']},
+        //         {name:'Kdfgharl', answers:['loszdgzcdgl', 'sdgczsfvfkek', 'kdfdvsfhk', 'keseck', 'cdfgadfhkek']},
+        //         {name:'Kawgarl', answers:['loszaercdgl', 'sdgcAdsvfkek', 'kdfdfbhhk', 'scdfkek', 'cdXWEfgakek']}
+        //     ]
+        // };
+        // let ansArray = respondentsObj.respondents;
         // надо поставить интервал опроса данной переменной, чтобы в лайв режиме обновлялось
-        const creatingTable = (container, countQ, answersArray) => {
+        const creatingTable = (container, countQ, answersArray = []) => {
             if(answersArray.length){
                 let table = document.createElement('table')
                 let thead = document.createElement('thead')
                 let firstStroke = document.createElement('tr')
-                for(let i = 0; i <= countQ; ++i){
+                for(let i = 0; i <= countQ+1; ++i){
                     let th = document.createElement('th')
                     if(i === countQ){
                         th.textContent = "Фамилия"
+                        firstStroke.prepend(th)
+                        break;
+                    }
+                    if(i === countQ+1){
+                        th.textContent = "Имя"
                         firstStroke.prepend(th)
                         break;
                     }
@@ -173,14 +188,19 @@
 
                 for(let i = 0; i < answersArray.length; ++i){
                     let stroke =  document.createElement('tr')
-                    for(let j = 0; j <= countQ; ++j){
+                    for(let j = 0; j <= countQ+1; ++j){
                         let td = document.createElement('td')
                         if(j === countQ){
+                            td.textContent = answersArray[i].surname
+                            stroke.prepend(td)
+                            break;
+                        }
+                        if(j === countQ+1){
                             td.textContent = answersArray[i].name
                             stroke.prepend(td)
                             break;
                         }
-                        td.textContent = answersArray[i].answers[j]
+                        td.textContent = answersArray[i].answersField[j]
                         stroke.append(td)
                     }
                     table.append(stroke);
@@ -194,50 +214,28 @@
                 container.append(h1)
             }
 
-        }
-        const countButton = document.querySelector("#countButton");
-        countButton.addEventListener("click", () => {
-            const title = document.querySelector("#titleInput").value
-            const count = document.querySelector("#countInput").value
-            //creatingSurvey(count)
-            const JSONToSending = JSON.stringify({title, count})
-            let request = new XMLHttpRequest();
-            request.open("POST", "/survey", true);
-            request.setRequestHeader("Content-Type", "application/json");
-            request.addEventListener("load", function () {
-                // if(request.status === 200 && request.readyState === 4){
-                //     if(checkbox.checked){
-                //         document.location.href = '/pages/special';
-                //     }
-                //     else{
-                //     localStorage.setItem("name", document.getElementById('name').value)
-                //     localStorage.setItem("surname", document.getElementById('surname').value)
-                //     localStorage.setItem("group", document.getElementById('group').value)
-                //     document.location.href = '/pages/profile';
-                //     }
-                // }
+        };
 
-            });
-            request.send(JSONToSending);
+        startButton.addEventListener('click', () => {
+            let resAnswers = [];
+            let oldTable = resAnswers;
+            setInterval(() => {
+                let request = new XMLHttpRequest();
+                request.open("GET", "/answers", true);
+                request.addEventListener("load", function () {
+                    if(request.status === 200 && request.readyState === 4){
+                        resAnswers = JSON.parse(request.response);
+                        if(resAnswers.length){
+                            contForTable.innerHTML = "";
+                            creatingTable(contForTable, resAnswers[0].answersField.length, resAnswers);
+                            oldTable = resAnswers;
+                        }
+                    }
+                });
+                request.send();
+            }, 3000);
+
         });
-        // const creatingSurvey = (container, count) => {
-
-        //     for(let i = 0; i < count; ++i){
-        //         let div = document.createElement('div');
-        //         div.classList.add("surveyItem");
-        //         let input = document.createElement('input');
-        //         input.id = question + (i + 1);
-        //         input.classList.add("inputSurvey");
-        //         let label = document.createElement("label");
-        //         label.textContent = "Вопрос № " + (i + 1);
-        //         label.setAttribute('for', input.id);
-        //         div.append(label);
-        //         div.append(input);
-        //         container.append(div)
-        //     }
-
-        // }
-        creatingTable(contForTable, respondentsObj.questionsCount, ansArray);
 
     </script>
 </body>
