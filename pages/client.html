@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            background-color: #000;
+            background-color: #fff;
             width: 90%;
             margin: 0 auto;
             font-family: "Roboto", sans-serif;
-            color: #fff;
+            color: #000;
             transition: 0.5s;
             margin-bottom: 100px;
         }
@@ -31,14 +31,14 @@
 
         a {
             text-decoration: none;
-            color: #fff;
+            color: #000;
             font-size: 18px;
             transition: 0.5s;
         }
 
         a:hover {
-            background-color: #272727;
-            box-shadow: 0 0 10px 8px #272727;
+            background-color: #cecccc;
+            box-shadow: 0 0 10px 8px #cecccc;
             transition: 0.5s;
         }
 
@@ -60,45 +60,44 @@
             font-size: 18px;
             width: 200px;
             margin-top: 5px;
-            border: 2px solid #fff;
-            background-color: #000;
-            color: #fff;
+            border: 2px solid #000;
+            background-color: #fff;
+            color: #000;
             border-radius: 5px;
             transition: 0.5s;
         }
 
         .inputClient:hover {
-            background-color: #696969;
+            background-color: #cecccc;
             transition: 0.5s;
         }
 
         #sendingButton {
             width: 150px;
             height: 40px;
-            background-color: black;
+            background-color: white;
             border-radius: 5px;
-            color: #fff;
+            color: #000;
             font-weight: 700;
-            border: 2px solid #fff;
+            border: 2px solid #000;
             transition: 0.5s;
         }
 
         #sendingButton:hover {
-            background-color: black;
             color: #000;
-            background-color: #696969;
+            background-color: #cecccc;
             cursor: pointer;
             transition: 0.5s;
         }
 
         fieldset {
-            border: 3px solid white;
-            color: white;
+            border: 3px solid black;
+            color: black;
             transition: 0.5s;
         }
 
         fieldset:hover {
-            box-shadow: 0 0 10px 8px #272727;
+            box-shadow: 0 0 10px 8px #cecccc;
             transition: 0.5s;
         }
 
@@ -112,21 +111,20 @@
         #forVariants {
             display:flex;
             flex-wrap:wrap;
-            justify-content: space-around;
+            justify-content: center;
         }
         .variantsItem {
             display:flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border:3px solid #fff;
+            border:3px solid #000;
             padding:0 20px 20px 20px;
             transition: 0.5s;
-            width:30%;
-            margin:5%
+            margin:20px;
         }
         .variantsItem:hover {
-            background-color: #696969;
+            background-color: #cecccc;
             transition: 0.5s;
         }
 
@@ -231,7 +229,7 @@
             }
         });
         request.send();
-        
+
         sendingButton.addEventListener('click', () => {
             const inputFields = document.querySelectorAll(".inputClient")
             const massAnswers = []
@@ -239,7 +237,7 @@
                 massAnswers.push(item.value);
             });
             const JSONToSending = {
-                group:localStorage.getItem("group"), 
+                group:localStorage.getItem("group"),
                 name:localStorage.getItem("name"),
                 surname:localStorage.getItem("surname"),
                 answersField:massAnswers

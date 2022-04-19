@@ -24,7 +24,9 @@ pagesRouter.get("/profile", function(request, response){
 //получаем ответы от юзера
 app.post("/answers", jsonParser, customQueries.answersProcessing);
 //даём ответы админу
-app.get("/answers",jsonParser, customQueries.answersGetting);
+app.get("/answers", jsonParser, customQueries.answersGetting);
+//очищаем табличку для админа
+app.get("/cleananswers", customQueries.cleanAnswers);
 //создание опроса
 app.post("/survey", jsonParser, customQueries.surveyProcessing);
 //получение опроса студентами

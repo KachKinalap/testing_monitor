@@ -7,3 +7,4 @@ exports.pasteAnswers = "INSERT INTO answers VALUES (?, ?, ?, ?)";
 exports.findUserAnswers = "SELECT * FROM answers WHERE (educationGroup = ?) AND (name = ?) AND (surname = ?)";
 exports.deleteUsersAnswers = "DELETE FROM answers WHERE (educationGroup = ?) AND (name = ?) AND (surname = ?)";
 exports.getAnswers = "SELECT * FROM answers";
+exports.truncateAnswers = "TRUNCATE answers";

@@ -143,3 +143,14 @@ exports.answersGetting = (request, response) => {
         }
     });
 };
+
+exports.cleanAnswers = (request, response) => {
+    connConfig.query(queryTemplates.truncateAnswers, (err, result) => {
+        if(err) {
+            console.log(err);
+        }
+        else {
+            response.json("tableIsTruncated");
+        }
+    });
+};

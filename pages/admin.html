@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            background-color: #000;
+            background-color: #fff;
             width: 90%;
             margin: 0 auto;
             font-family: "Roboto", sans-serif;
-            color: #fff;
+            color: #000;
             transition: 0.5s;
         }
 
@@ -31,14 +31,14 @@
 
         a {
             text-decoration: none;
-            color: #fff;
+            color: #000;
             font-size: 18px;
             transition: 0.5s;
         }
 
         a:hover {
-            background-color: #272727;
-            box-shadow: 0 0 10px 8px #272727;
+            background-color: #cecccc;
+            box-shadow: 0 0 10px 8px #cecccc;
             transition: 0.5s;
         }
 
@@ -50,7 +50,7 @@
         th,
         td {
             padding: 10px 20px;
-            border: 1px solid #fff;
+            border: 1px solid #000;
             min-width: 100px;
             text-align: center;
             transition: 0.5s;
@@ -58,7 +58,7 @@
 
         th:hover,
         td:hover {
-            background-color: #272727;
+            background-color: #cecccc;
             transition: 0.5s;
             cursor: pointer;
         }
@@ -80,26 +80,26 @@
             font-size: 18px;
             width: 400px;
             margin-top: 5px;
-            border: 2px solid #fff;
-            background-color: #000;
-            color: #fff;
+            border: 2px solid #000;
+            background-color: #fff;
+            color: #000;
             border-radius: 5px;
             transition: 0.5s;
         }
 
         .inputSurvey:hover {
-            background-color: #696969;
+            background-color: #cecccc;
             transition: 0.5s;
         }
 
         #countButton, #startButton, #truncateButton {
             width: 150px;
             height: 40px;
-            background-color: black;
+            background-color: white;
             border-radius: 5px;
-            color: #fff;
+            color: #000;
             font-weight: 700;
-            border: 2px solid #fff;
+            border: 2px solid #000;
             transition: 0.5s;
             margin-top:40px;
         }
@@ -110,7 +110,7 @@
 
         #countButton:hover, #startButton:hover, #truncateButton:hover {
             color: #000;
-            background-color: #696969;
+            background-color: #cecccc;
             cursor: pointer;
             transition: 0.5s;
         }
@@ -132,7 +132,7 @@
         <input type="button" id="truncateButton" value="Очистка результатов">
     </div>
     <div>
-        <h2>Создание опроса</h2>
+        <h2 style="margin-top:150px">Создание опроса</h2>
         <div class="surveyItem">
             <label for="titleInput">название опроса</label>
             <input type="text" id="titleInput" class="inputSurvey" style="width:300px">
@@ -151,32 +151,23 @@
     </footer>
     <script type="text/javascript">
         let contForTable = document.getElementById("mainAdmin");
+        const countButton = document.querySelector("#countButton");
         const startButton = document.querySelector("#startButton");
         const truncateButton = document.querySelector("#truncateButton");
-        //тут запрос, по идее
-        // let respondentsObj = {questionsCount:5, respondents:[{name:'Kaku;.orl', answers:['loss gazcdgl', 'gfhfnsdgcvfkek', 'kdfsdcghk', 'kweaek', 'cdfgfgnakek']},
-        //         {name:'Kagfhkrl', answers:['loszcdfgxfdgl', 'sdvbmbgcvfkek', 'kdfsdsxfchk', 'kedrak', 'cdsdfgakek']},
-        //         {name:'Kdfgharl', answers:['loszdgzcdgl', 'sdgczsfvfkek', 'kdfdvsfhk', 'keseck', 'cdfgadfhkek']},
-        //         {name:'Kawgarl', answers:['loszaercdgl', 'sdgcAdsvfkek', 'kdfdfbhhk', 'scdfkek', 'cdXWEfgakek']}
-        //     ]
-        // };
-        // let ansArray = respondentsObj.respondents;
-        // надо поставить интервал опроса данной переменной, чтобы в лайв режиме обновлялось
+        let statInterval = "";
         const creatingTable = (container, countQ, answersArray = []) => {
             if(answersArray.length){
                 let table = document.createElement('table')
                 let thead = document.createElement('thead')
                 let firstStroke = document.createElement('tr')
-                for(let i = 0; i <= countQ+1; ++i){
+                for(let i = 0; i <= countQ; ++i){
                     let th = document.createElement('th')
                     if(i === countQ){
                         th.textContent = "Фамилия"
                         firstStroke.prepend(th)
-                        break;
-                    }
-                    if(i === countQ+1){
-                        th.textContent = "Имя"
-                        firstStroke.prepend(th)
+                        let thId = document.createElement('th')
+                        thId.textContent = "Номер"
+                        firstStroke.prepend(thId)
                         break;
                     }
                     th.textContent = `Вопрос №${i+1}`
@@ -188,16 +179,14 @@
 
                 for(let i = 0; i < answersArray.length; ++i){
                     let stroke =  document.createElement('tr')
-                    for(let j = 0; j <= countQ+1; ++j){
+                    for(let j = 0; j <= countQ; ++j){
                         let td = document.createElement('td')
                         if(j === countQ){
                             td.textContent = answersArray[i].surname
                             stroke.prepend(td)
-                            break;
-                        }
-                        if(j === countQ+1){
-                            td.textContent = answersArray[i].name
-                            stroke.prepend(td)
+                            let tdId = document.createElement('td')
+                            tdId.textContent = (i+1).toString()
+                            stroke.prepend(tdId)
                             break;
                         }
                         td.textContent = answersArray[i].answersField[j]
@@ -216,25 +205,52 @@
 
         };
 
+        countButton.addEventListener("click", () => {
+            const title = document.querySelector("#titleInput").value
+            const count = document.querySelector("#countInput").value
+            const JSONToSending = JSON.stringify({title, count})
+            let request = new XMLHttpRequest();
+            request.open("POST", "/survey", true);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.addEventListener("load", function () {
+
+            });
+            request.send(JSONToSending);
+        });
+
         startButton.addEventListener('click', () => {
             let resAnswers = [];
-            let oldTable = resAnswers;
-            setInterval(() => {
+            statInterval = setInterval(() => {
                 let request = new XMLHttpRequest();
                 request.open("GET", "/answers", true);
                 request.addEventListener("load", function () {
                     if(request.status === 200 && request.readyState === 4){
+                        contForTable.innerHTML = "";
                         resAnswers = JSON.parse(request.response);
                         if(resAnswers.length){
-                            contForTable.innerHTML = "";
                             creatingTable(contForTable, resAnswers[0].answersField.length, resAnswers);
-                            oldTable = resAnswers;
+                        }
+                        else{
+                            creatingTable(contForTable, 0, []);
                         }
                     }
                 });
                 request.send();
             }, 3000);
 
+        });
+
+        truncateButton.addEventListener('click', () => {
+            clearInterval(statInterval);
+            contForTable.innerHTML = "";
+            let request = new XMLHttpRequest();
+            request.open("GET", "/cleananswers", true);
+            request.addEventListener("load", function () {
+                if(request.status === 200 && request.readyState === 4){
+
+                }
+            });
+            request.send();
         });
 
     </script>
